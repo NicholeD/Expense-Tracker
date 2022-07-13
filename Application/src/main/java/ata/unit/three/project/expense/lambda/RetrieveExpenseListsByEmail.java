@@ -32,6 +32,7 @@ public class RetrieveExpenseListsByEmail
 
         log.info(gson.toJson(input));
 
+
         ExpenseService expenseService = App.expenseService();
         Map<String, String> headers = new HashMap<>();
         headers.put("Content-Type", "application/json");

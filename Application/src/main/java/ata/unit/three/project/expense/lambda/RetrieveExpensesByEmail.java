@@ -49,8 +49,7 @@ public class RetrieveExpensesByEmail
             return response
                     .withStatusCode(200)
                     .withBody(output);
-
-        } catch (InvalidDataException e) { //getExpensesByEmail throws exception if email is empty
+        } catch (InvalidDataException e) {
             return response
                     .withStatusCode(400)
                     .withBody(gson.toJson(e.errorPayload()));
