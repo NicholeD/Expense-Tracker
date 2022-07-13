@@ -95,24 +95,48 @@ class ExpenseServiceTest {
      *  ------------------------------------------------------------------------ **/
 
     // Write additional tests here
+    @Test
+    void update_expense() {
+        //GIVEN
+
+        //WHEN
+
+        //THEN
+    }
 
     /** ------------------------------------------------------------------------
      *  expenseService.deleteExpense
      *  ------------------------------------------------------------------------ **/
 
     // Write additional tests here
+    @Test
+    void delete_expense() {
+        //GIVEN
+
+        //WHEN
+
+        //THEN
+    }
 
     /** ------------------------------------------------------------------------
      *  expenseService.addExpenseItemToList
      *  ------------------------------------------------------------------------ **/
 
     // Write additional tests here
+    @Test
+    void add_expense_item_to_list() {
+
+    }
 
     /** ------------------------------------------------------------------------
      *  expenseService.removeExpenseItemFromList
      *  ------------------------------------------------------------------------ **/
 
     // Write additional tests here
+    @Test
+    void remove_expense_item_from_list() {
+
+    }
 
     /** ------------------------------------------------------------------------
      *  expenseService.getExpenseListByEmail

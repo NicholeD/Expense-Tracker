@@ -5,6 +5,7 @@ import ata.unit.three.project.expense.lambda.models.Expense;
 import ata.unit.three.project.expense.service.ExpenseService;
 import ata.unit.three.project.expense.service.ExpenseServiceComponent;
 
+import ata.unit.three.project.expense.service.exceptions.InvalidDataException;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
@@ -31,14 +32,13 @@ public class CreateExpense implements RequestHandler<APIGatewayProxyRequestEvent
         ExpenseService expenseService = App.expenseService();
 
         APIGatewayProxyResponseEvent response = new APIGatewayProxyResponseEvent();
-        
-        // Your Code Here
 
+        // Your Code Here
         Expense expense = gson.fromJson(input.getBody(), Expense.class);
-        expenseService.createExpense(expense);
+        String output = expenseService.createExpense(expense);
 
         return response
-                .withStatusCode(204);
-
+                .withStatusCode(200)
+                .withBody(output);
     }
 }

@@ -1,5 +1,9 @@
 package ata.unit.three.project.expense.lambda;
 
+import ata.unit.three.project.App;
+import ata.unit.three.project.expense.dynamodb.ExpenseItem;
+import ata.unit.three.project.expense.service.ExpenseService;
+import ata.unit.three.project.expense.service.exceptions.InvalidDataException;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
@@ -11,6 +15,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @ExcludeFromJacocoGeneratedReport
@@ -36,8 +41,19 @@ public class RetrieveExpensesByEmail
         String email = input.getQueryStringParameters().get("email");
 
         // Your Code Here
+        try {
+            ExpenseService expenseService = App.expenseService();
+            List<ExpenseItem> expenses = expenseService.getExpensesByEmail(email);
+            String output = gson.toJson(expenses);
 
-        return response
-                .withStatusCode(200);
+            return response
+                    .withStatusCode(200)
+                    .withBody(output);
+
+        } catch (InvalidDataException e) { //getExpensesByEmail throws exception if email is empty
+            return response
+                    .withStatusCode(400)
+                    .withBody(gson.toJson(e.errorPayload()));
+        }
     }
 }

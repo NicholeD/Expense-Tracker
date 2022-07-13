@@ -1,5 +1,9 @@
 package ata.unit.three.project.expense.lambda;
 
+import ata.unit.three.project.App;
+import ata.unit.three.project.expense.lambda.models.Expense;
+import ata.unit.three.project.expense.service.ExpenseService;
+import ata.unit.three.project.expense.service.exceptions.InvalidDataException;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
@@ -27,8 +31,30 @@ public class DeleteExpense implements RequestHandler<APIGatewayProxyRequestEvent
         APIGatewayProxyResponseEvent response = new APIGatewayProxyResponseEvent();
 
         // Your Code Here
+        ExpenseService expenseService = App.expenseService();
 
-        return response
-                .withStatusCode(200);
+        if (expenseId == null || expenseId.isEmpty()) {
+            return response
+                    .withStatusCode(404);
+        }
+
+        try {
+            expenseService.deleteExpense(expenseId);
+
+            if (expenseId == null) {
+                return response
+                        .withStatusCode(404);
+            }
+
+            return response
+                    .withStatusCode(204)
+                    .withBody(expenseId);
+
+        } catch (InvalidDataException e) {
+            return response
+                    .withStatusCode(400)
+                    .withBody(gson.toJson(e.errorPayload()));
+        }
+
     }
 }

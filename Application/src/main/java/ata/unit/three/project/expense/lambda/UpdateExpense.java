@@ -1,5 +1,9 @@
 package ata.unit.three.project.expense.lambda;
 
+import ata.unit.three.project.App;
+import ata.unit.three.project.expense.lambda.models.Expense;
+import ata.unit.three.project.expense.service.ExpenseService;
+import ata.unit.three.project.expense.service.exceptions.InvalidDataException;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
@@ -25,10 +29,27 @@ public class UpdateExpense implements RequestHandler<APIGatewayProxyRequestEvent
         APIGatewayProxyResponseEvent response = new APIGatewayProxyResponseEvent();
 
         String expenseId = input.getPathParameters().get("expenseId");
+        Expense expense = gson.fromJson(input.getBody(), Expense.class);
 
         // Your Code Here
+        ExpenseService expenseService = App.expenseService();
 
-        return response
-                .withStatusCode(200);
+        if (expenseId == null || expenseId.isEmpty()) {
+            return response
+                    .withStatusCode(404);
+        }
+
+        try {
+            expenseService.updateExpense(expenseId, expense);
+
+            return response
+                    .withStatusCode(200)
+                    .withBody(expenseId);
+
+        } catch (InvalidDataException e) {
+            return response
+                    .withStatusCode(400)
+                    .withBody(gson.toJson(e.errorPayload()));
+        }
     }
 }

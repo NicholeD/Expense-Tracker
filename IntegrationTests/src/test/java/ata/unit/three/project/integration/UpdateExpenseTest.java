@@ -42,7 +42,7 @@ public class UpdateExpenseTest {
             .when()
                 .put(url + "expenses/" + expenseId)
             .then()
-                .statusCode(204);
+                .statusCode(200);
 
         Float amountFromResponse =
             given()
