@@ -49,7 +49,9 @@ public class RetrieveExpensesByEmail
             return response
                     .withStatusCode(200)
                     .withBody(output);
+
         } catch (InvalidDataException e) {
+
             return response
                     .withStatusCode(400)
                     .withBody(gson.toJson(e.errorPayload()));

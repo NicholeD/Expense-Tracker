@@ -3,6 +3,7 @@ package ata.unit.three.project.expense.service;
 import ata.unit.three.project.expense.dynamodb.ExpenseItem;
 import ata.unit.three.project.expense.dynamodb.ExpenseItemList;
 import ata.unit.three.project.expense.dynamodb.ExpenseServiceRepository;
+import ata.unit.three.project.expense.lambda.models.Expense;
 import ata.unit.three.project.expense.service.exceptions.InvalidDataException;
 import ata.unit.three.project.expense.service.exceptions.ItemNotFoundException;
 import ata.unit.three.project.expense.service.model.ExpenseItemConverter;
@@ -16,8 +17,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -89,19 +89,55 @@ class ExpenseServiceTest {
     }
 
     // Write additional tests here
+    @Test
+    void get_expense_by_email_with_blank_email() {
+        //GIVEN
+        ExpenseServiceRepository expenseServiceRepository = mock(ExpenseServiceRepository.class);
+        ExpenseItemConverter expenseItemConverter = mock(ExpenseItemConverter.class);
+        ExpenseService expenseService = new ExpenseService(expenseServiceRepository, expenseItemConverter);
+
+        //WHEN-THEN
+        assertThrows(InvalidDataException.class,
+                () -> expenseService.getExpensesByEmail(""), "Email cannot be blank.");
+    }
 
     /** ------------------------------------------------------------------------
      *  expenseService.updateExpense
      *  ------------------------------------------------------------------------ **/
 
     // Write additional tests here
+
     @Test
-    void update_expense() {
+    void update_expense_with_null_item_throws_ItemNotFoundException() {
         //GIVEN
+        ExpenseServiceRepository expenseServiceRepository = mock(ExpenseServiceRepository.class);
+        ExpenseItemConverter expenseItemConverter = mock(ExpenseItemConverter.class);
+        ExpenseService expenseService = new ExpenseService(expenseServiceRepository, expenseItemConverter);
 
-        //WHEN
+        Expense expense = mock(Expense.class);
+        String id = UUID.randomUUID().toString();
 
-        //THEN
+        when(expenseServiceRepository.getExpenseById(id)).thenReturn(null);
+
+        //WHEN-THEN
+        assertThrows(ItemNotFoundException.class,
+                () -> expenseService.updateExpense(id, expense), "Expense does not exist.");
+
+    }
+
+    @Test
+    void update_expense_with_empty_id() {
+        ExpenseServiceRepository expenseServiceRepository = mock(ExpenseServiceRepository.class);
+        ExpenseItemConverter expenseItemConverter = mock(ExpenseItemConverter.class);
+        ExpenseService expenseService = new ExpenseService(expenseServiceRepository, expenseItemConverter);
+
+        Expense expense = mock(Expense.class);
+        String id = "";
+
+        //WHEN-THEN
+        assertThrows(InvalidDataException.class,
+                () -> expenseService.updateExpense(id, expense), "Expense id cannot be blank.");
+
     }
 
     /** ------------------------------------------------------------------------
@@ -112,10 +148,13 @@ class ExpenseServiceTest {
     @Test
     void delete_expense() {
         //GIVEN
+        ExpenseServiceRepository expenseServiceRepository = mock(ExpenseServiceRepository.class);
+        ExpenseItemConverter expenseItemConverter = mock(ExpenseItemConverter.class);
+        ExpenseService expenseService = new ExpenseService(expenseServiceRepository, expenseItemConverter);
 
-        //WHEN
-
-        //THEN
+        //WHEN-THEN
+        assertThrows(InvalidDataException.class,
+                () -> expenseService.deleteExpense(""), "Expense id cannot be blank.");
     }
 
     /** ------------------------------------------------------------------------

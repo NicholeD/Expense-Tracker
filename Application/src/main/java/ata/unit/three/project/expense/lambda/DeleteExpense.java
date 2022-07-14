@@ -41,11 +41,6 @@ public class DeleteExpense implements RequestHandler<APIGatewayProxyRequestEvent
         try {
             expenseService.deleteExpense(expenseId);
 
-            if (expenseId == null) {
-                return response
-                        .withStatusCode(404);
-            }
-
             return response
                     .withStatusCode(204)
                     .withBody(expenseId);
@@ -55,6 +50,5 @@ public class DeleteExpense implements RequestHandler<APIGatewayProxyRequestEvent
                     .withStatusCode(400)
                     .withBody(gson.toJson(e.errorPayload()));
         }
-
     }
 }
