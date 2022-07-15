@@ -9,7 +9,8 @@ import java.util.UUID;
 
 
 public class ExpenseItemConverter {
-    
+
+    @Inject
     public ExpenseItemConverter() {
 
     }
