@@ -16,6 +16,7 @@ import com.kenzie.ata.ExcludeFromJacocoGeneratedReport;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -27,6 +28,7 @@ public class RetrieveExpense implements RequestHandler<APIGatewayProxyRequestEve
 
     static final Logger log = LogManager.getLogger();
 
+    @Inject
     @Override
     public APIGatewayProxyResponseEvent handleRequest(APIGatewayProxyRequestEvent input, Context context) {
         GsonBuilder builder = new GsonBuilder();
