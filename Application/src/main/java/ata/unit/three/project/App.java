@@ -10,7 +10,8 @@ import dagger.Provides;
 @Module
 public class App {
     @Provides
-    public static ExpenseService expenseService() {
-        return new ExpenseService(new ExpenseServiceRepository(), new ExpenseItemConverter());
+    public static ExpenseService expenseService(ExpenseServiceRepository expenseServiceRepository,
+                                                ExpenseItemConverter expenseItemConverter) {
+        return new ExpenseService(expenseServiceRepository, expenseItemConverter);
     }
 }
