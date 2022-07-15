@@ -7,6 +7,9 @@ import ata.unit.three.project.expense.lambda.models.Expense;
 import ata.unit.three.project.expense.service.exceptions.InvalidDataException;
 import ata.unit.three.project.expense.service.exceptions.ItemNotFoundException;
 import ata.unit.three.project.expense.service.model.ExpenseItemConverter;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import net.andreinc.mockneat.MockNeat;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -55,7 +58,38 @@ class ExpenseServiceTest {
         Assertions.assertEquals(returnedExpenseItem.getExpenseDate(), expenseItem.getExpenseDate());
     }
 
-    // Write additional tests here
+
+    @Test
+    void get_expense_with_empty_id() {
+        //GIVEN
+        ExpenseServiceRepository expenseServiceRepository = mock(ExpenseServiceRepository.class);
+        ExpenseItemConverter expenseItemConverter = mock(ExpenseItemConverter.class);
+        ExpenseService expenseService = new ExpenseService(expenseServiceRepository, expenseItemConverter);
+
+        ExpenseItem expenseItem = new ExpenseItem();
+        String id = "";
+        expenseItem.setId(id);
+
+        //WHEN -THEN
+        assertThrows(InvalidDataException.class,
+                () -> expenseService.getExpenseById(id), "Expense id cannot be blank");
+    }
+
+    @Test
+    void get_expense_with_invalid_id() {
+        //GIVEN
+        ExpenseServiceRepository expenseServiceRepository = mock(ExpenseServiceRepository.class);
+        ExpenseItemConverter expenseItemConverter = mock(ExpenseItemConverter.class);
+        ExpenseService expenseService = new ExpenseService(expenseServiceRepository, expenseItemConverter);
+
+        ExpenseItem expenseItem = new ExpenseItem();
+        String id = "asf4d596";
+        expenseItem.setId(id);
+
+        //WHEN -THEN
+        assertThrows(InvalidDataException.class,
+                () -> expenseService.getExpenseById(id), "Expense id is invalid");
+    }
 
     /** ------------------------------------------------------------------------
      *  expenseService.getExpensesByEmail
@@ -108,6 +142,30 @@ class ExpenseServiceTest {
     // Write additional tests here
 
     @Test
+    void update_expense(){
+        //GIVEN
+        ExpenseServiceRepository expenseServiceRepository = mock(ExpenseServiceRepository.class);
+        ExpenseItemConverter expenseItemConverter = mock(ExpenseItemConverter.class);
+        ExpenseService expenseService = new ExpenseService(expenseServiceRepository, expenseItemConverter);
+
+        ExpenseItem expenseItem = new ExpenseItem();
+        String id = UUID.randomUUID().toString();
+        Double amount = mockNeat.doubles().val();
+        String email = mockNeat.emails().val();
+        String title = mockNeat.strings().val();
+        Expense expense = new Expense(email, title, amount);
+        expenseItem.setId(id);
+        expenseItem.setExpenseDate(Instant.now().toString());
+
+        when(expenseServiceRepository.getExpenseById(id)).thenReturn(expenseItem);
+
+        //WHEN
+        expenseService.updateExpense(id, expense);
+
+        //THEN
+        assertEquals(amount, expense.getAmount());
+    }
+    @Test
     void update_expense_with_null_item_throws_ItemNotFoundException() {
         //GIVEN
         ExpenseServiceRepository expenseServiceRepository = mock(ExpenseServiceRepository.class);
@@ -116,6 +174,7 @@ class ExpenseServiceTest {
 
         Expense expense = mock(Expense.class);
         String id = UUID.randomUUID().toString();
+        System.out.println(id);
 
         when(expenseServiceRepository.getExpenseById(id)).thenReturn(null);
 
@@ -131,13 +190,24 @@ class ExpenseServiceTest {
         ExpenseItemConverter expenseItemConverter = mock(ExpenseItemConverter.class);
         ExpenseService expenseService = new ExpenseService(expenseServiceRepository, expenseItemConverter);
 
+        //WHEN-THEN
+        assertThrows(InvalidDataException.class,
+                () -> expenseService.updateExpense("", mock(Expense.class)), "Expense id cannot be blank.");
+
+    }
+
+    @Test
+    void update_expense_with_invalid_id() {
+        ExpenseServiceRepository expenseServiceRepository = mock(ExpenseServiceRepository.class);
+        ExpenseItemConverter expenseItemConverter = mock(ExpenseItemConverter.class);
+        ExpenseService expenseService = new ExpenseService(expenseServiceRepository, expenseItemConverter);
+
         Expense expense = mock(Expense.class);
-        String id = "";
+        String id = "456dsfg";
 
         //WHEN-THEN
         assertThrows(InvalidDataException.class,
-                () -> expenseService.updateExpense(id, expense), "Expense id cannot be blank.");
-
+                () -> expenseService.updateExpense(id, expense), "Invalid UUID.");
     }
 
     /** ------------------------------------------------------------------------
@@ -146,7 +216,7 @@ class ExpenseServiceTest {
 
     // Write additional tests here
     @Test
-    void delete_expense() {
+    void delete_expense_with_empty_id() {
         //GIVEN
         ExpenseServiceRepository expenseServiceRepository = mock(ExpenseServiceRepository.class);
         ExpenseItemConverter expenseItemConverter = mock(ExpenseItemConverter.class);
@@ -157,6 +227,55 @@ class ExpenseServiceTest {
                 () -> expenseService.deleteExpense(""), "Expense id cannot be blank.");
     }
 
+    @Test
+    void delete_expense_with_invalid_id() {
+        //GIVEN
+        ExpenseServiceRepository expenseServiceRepository = mock(ExpenseServiceRepository.class);
+        ExpenseItemConverter expenseItemConverter = mock(ExpenseItemConverter.class);
+        ExpenseService expenseService = new ExpenseService(expenseServiceRepository, expenseItemConverter);
+
+        //WHEN-THEN
+        assertThrows(InvalidDataException.class,
+                () -> expenseService.deleteExpense("arf684"), "Expense id cannot be blank.");
+    }
+
+
+    //TODO - finish test
+//    @Test
+//    void delete_expense() {
+//
+//        //GIVEN
+//        ExpenseServiceRepository expenseServiceRepository = mock(ExpenseServiceRepository.class);
+//        ExpenseItemConverter expenseItemConverter = mock(ExpenseItemConverter.class);
+//        ExpenseService expenseService = new ExpenseService(expenseServiceRepository, expenseItemConverter);
+//       // AmazonDynamoDB client = mock(AmazonDynamoDBClientBuilder.standard().build().getClass());
+//        DynamoDBMapper mapper = mock(DynamoDBMapper.class);
+//
+//        ExpenseItem expenseItem = new ExpenseItem();
+//        String id = UUID.randomUUID().toString();
+//        Double amount = mockNeat.doubles().val();
+//        String email = mockNeat.emails().val();
+//        String title = mockNeat.strings().val();
+//        Expense expense = new Expense(email, title, amount);
+//        expenseItem.setId(id);
+//        expenseItem.setExpenseDate(Instant.now().toString());
+//
+//        //when(mapper.load(ExpenseItem.class, id)).thenReturn(expenseItem);
+//        //WHEN
+//        //when(expenseServiceRepository.getExpenseById(id)).thenReturn(expenseItem);
+//        mapper.save(expenseItem);
+//
+//        //THEN
+//        //assertEquals(expenseItem, expenseService.getExpenseById(id));
+//        assertNotNull(mapper.load(ExpenseItem.class, id));
+//        expenseService.deleteExpense(id);
+//        assertNull(mapper.load(ExpenseItem.class, id));
+////        assertThrows(InvalidDataException.class,
+////                () -> expenseService.deleteExpense(id), "Expense does not exist");
+//
+//
+//    }
+
     /** ------------------------------------------------------------------------
      *  expenseService.addExpenseItemToList
      *  ------------------------------------------------------------------------ **/
@@ -164,7 +283,22 @@ class ExpenseServiceTest {
     // Write additional tests here
     @Test
     void add_expense_item_to_list() {
+        //GIVEN
+        ExpenseServiceRepository expenseServiceRepository = mock(ExpenseServiceRepository.class);
+        ExpenseItemConverter expenseItemConverter = mock(ExpenseItemConverter.class);
+        ExpenseService expenseService = new ExpenseService(expenseServiceRepository, expenseItemConverter);
 
+        ExpenseItem expenseItem = new ExpenseItem();
+        String id = UUID.randomUUID().toString();
+        expenseItem.setId(id);
+        expenseItem.setEmail(mockNeat.emails().val());
+        expenseItem.setExpenseDate(Instant.now().toString());
+        expenseItem.setTitle(mockNeat.strings().val());
+
+        //WHEN
+
+
+        //THEN
     }
 
     /** ------------------------------------------------------------------------

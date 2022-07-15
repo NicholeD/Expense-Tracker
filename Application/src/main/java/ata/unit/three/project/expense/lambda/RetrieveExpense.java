@@ -18,6 +18,9 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
+
+
 
 @ExcludeFromJacocoGeneratedReport
 public class RetrieveExpense implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
@@ -41,12 +44,20 @@ public class RetrieveExpense implements RequestHandler<APIGatewayProxyRequestEve
 
         String expenseId = input.getPathParameters().get("expenseId");
 
+//        try {
+//            UUID.fromString(expenseId);
+//        } catch(IllegalArgumentException e) {
+//            throw new InvalidDataException("The Id is not a valid UUID");
+//        }
+
         try {
             ExpenseItem expense = expenseService.getExpenseById(expenseId);
             if (expense == null) {
                 return response
                         .withStatusCode(404);
             }
+
+
             String output = gson.toJson(expense);
 
             return response

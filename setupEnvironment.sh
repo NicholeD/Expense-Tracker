@@ -13,7 +13,7 @@
 export UNIT_THREE_REPO_NAME=ata-unit-three-project-NicholeD
 
 # Do not modify the rest of these unless you have been instructed to do so.
-export UNIT_THREE_PROJECT_NAME=unitproject3
+export UNIT_THREE_PROJECT_NAME=unit3project
 export UNIT_THREE_PIPELINE_STACK=$UNIT_THREE_PROJECT_NAME-$GITHUB_USERNAME
 export UNIT_THREE_ARTIFACT_BUCKET=$UNIT_THREE_PROJECT_NAME-$GITHUB_USERNAME-artifacts
 export UNIT_THREE_DEPLOY_STACK=$UNIT_THREE_PROJECT_NAME-$GITHUB_USERNAME-application
