@@ -1,9 +1,11 @@
 package ata.unit.three.project.expense.lambda;
 
 import ata.unit.three.project.App;
+import ata.unit.three.project.expense.dynamodb.ExpenseItem;
 import ata.unit.three.project.expense.lambda.models.Expense;
 import ata.unit.three.project.expense.service.ExpenseService;
 import ata.unit.three.project.expense.service.exceptions.InvalidDataException;
+import ata.unit.three.project.expense.service.exceptions.ItemNotFoundException;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
@@ -13,6 +15,8 @@ import com.google.gson.GsonBuilder;
 import com.kenzie.ata.ExcludeFromJacocoGeneratedReport;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import static java.util.UUID.fromString;
 
 @ExcludeFromJacocoGeneratedReport
 public class UpdateExpense implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
@@ -40,7 +44,13 @@ public class UpdateExpense implements RequestHandler<APIGatewayProxyRequestEvent
         }
 
         try {
+            ExpenseItem item = expenseService.getExpenseById(expenseId);
+            if (item == null) {
+                return response
+                        .withStatusCode(404);
+            }
             expenseService.updateExpense(expenseId, expense);
+            fromString(expenseId);
 
             return response
                     .withStatusCode(200)

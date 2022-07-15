@@ -22,8 +22,7 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 class ExpenseServiceTest {
 
@@ -349,5 +348,63 @@ class ExpenseServiceTest {
     }
 
     // Write additional tests here
+
+    /** ------------------------------------------------------------------------
+     *  expenseService.createExpense
+     *  ------------------------------------------------------------------------ **/
+
+    @Test
+    void create_expense() {
+        //GIVEN
+        ExpenseServiceRepository expenseServiceRepository = mock(ExpenseServiceRepository.class);
+        ExpenseItemConverter expenseItemConverter = mock(ExpenseItemConverter.class);
+        ExpenseService expenseService = new ExpenseService(expenseServiceRepository, expenseItemConverter);
+
+        ExpenseItem expenseItem = new ExpenseItem();
+        String id = UUID.randomUUID().toString();
+        Double amount = mockNeat.doubles().val();
+        String email = mockNeat.emails().val();
+        String title = mockNeat.strings().val();
+        Expense expense = new Expense(email, title, amount);
+        expenseItem.setId(id);
+        expenseItem.setExpenseDate(Instant.now().toString());
+        expenseItem.setEmail(email);
+        expenseItem.setTitle(title);
+        expenseItem.setAmount(amount);
+
+        when(expenseItemConverter.convert(any())).thenReturn(expenseItem);
+        when(expenseServiceRepository.getExpenseById(any())).thenReturn(expenseItem);
+
+        //WHEN
+        expenseService.createExpense(expense);
+
+        //THEN
+        assertEquals(expenseItem, expenseService.getExpenseById(id));
+    }
+
+
+    @Test
+    void create_expense_list() {
+        //TODO - need to work on this
+        //GIVEN
+        ExpenseServiceRepository expenseServiceRepository = mock(ExpenseServiceRepository.class);
+        ExpenseItemConverter expenseItemConverter = mock(ExpenseItemConverter.class);
+        ExpenseService expenseService = new ExpenseService(expenseServiceRepository, expenseItemConverter);
+
+        String email = mockNeat.emails().val();
+        String title = mockNeat.strings().val();
+
+        //WHEN
+        String id = expenseService.createExpenseList(email, title);
+
+        List<ExpenseItemList> expenseItemList = expenseService.getExpenseListByEmail(email);
+
+
+
+        //THEN
+        assertNotNull(expenseItemList);
+
+
+    }
 
 }
