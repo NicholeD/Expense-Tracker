@@ -240,40 +240,33 @@ class ExpenseServiceTest {
 
 
     //TODO - finish test
-//    @Test
-//    void delete_expense() {
-//
-//        //GIVEN
-//        ExpenseServiceRepository expenseServiceRepository = mock(ExpenseServiceRepository.class);
-//        ExpenseItemConverter expenseItemConverter = mock(ExpenseItemConverter.class);
-//        ExpenseService expenseService = new ExpenseService(expenseServiceRepository, expenseItemConverter);
-//       // AmazonDynamoDB client = mock(AmazonDynamoDBClientBuilder.standard().build().getClass());
-//        DynamoDBMapper mapper = mock(DynamoDBMapper.class);
-//
-//        ExpenseItem expenseItem = new ExpenseItem();
-//        String id = UUID.randomUUID().toString();
-//        Double amount = mockNeat.doubles().val();
-//        String email = mockNeat.emails().val();
-//        String title = mockNeat.strings().val();
-//        Expense expense = new Expense(email, title, amount);
-//        expenseItem.setId(id);
-//        expenseItem.setExpenseDate(Instant.now().toString());
-//
-//        //when(mapper.load(ExpenseItem.class, id)).thenReturn(expenseItem);
-//        //WHEN
-//        //when(expenseServiceRepository.getExpenseById(id)).thenReturn(expenseItem);
-//        mapper.save(expenseItem);
-//
-//        //THEN
-//        //assertEquals(expenseItem, expenseService.getExpenseById(id));
-//        assertNotNull(mapper.load(ExpenseItem.class, id));
-//        expenseService.deleteExpense(id);
-//        assertNull(mapper.load(ExpenseItem.class, id));
-////        assertThrows(InvalidDataException.class,
-////                () -> expenseService.deleteExpense(id), "Expense does not exist");
-//
-//
-//    }
+    @Test
+    void delete_expense() {
+
+        //GIVEN
+        ExpenseServiceRepository expenseServiceRepository = mock(ExpenseServiceRepository.class);
+        ExpenseItemConverter expenseItemConverter = mock(ExpenseItemConverter.class);
+        ExpenseService expenseService = new ExpenseService(expenseServiceRepository, expenseItemConverter);
+
+        ExpenseItem expenseItem = new ExpenseItem();
+        String id = UUID.randomUUID().toString();
+        Double amount = mockNeat.doubles().val();
+        String email = mockNeat.emails().val();
+        String title = mockNeat.strings().val();
+        Expense expense = new Expense(email, title, amount);
+        expenseItem.setId(id);
+
+        when(expenseItemConverter.convert(expense)).thenReturn(expenseItem);
+
+        //WHEN
+        String newlyCreated = expenseService.createExpense(expense);
+        expenseService.deleteExpense(newlyCreated);
+
+        //THEN
+        assertThrows(ItemNotFoundException.class,
+                () -> expenseService.updateExpense(expenseItem.getId(), expense));
+
+    }
 
     /** ------------------------------------------------------------------------
      *  expenseService.addExpenseItemToList
@@ -383,28 +376,28 @@ class ExpenseServiceTest {
     }
 
 
-    @Test
-    void create_expense_list() {
-        //TODO - need to work on this
-        //GIVEN
-        ExpenseServiceRepository expenseServiceRepository = mock(ExpenseServiceRepository.class);
-        ExpenseItemConverter expenseItemConverter = mock(ExpenseItemConverter.class);
-        ExpenseService expenseService = new ExpenseService(expenseServiceRepository, expenseItemConverter);
-
-        String email = mockNeat.emails().val();
-        String title = mockNeat.strings().val();
-
-        //WHEN
-        String id = expenseService.createExpenseList(email, title);
-
-        List<ExpenseItemList> expenseItemList = expenseService.getExpenseListByEmail(email);
-
-
-
-        //THEN
-        assertNotNull(expenseItemList);
-
-
-    }
+//    @Test
+//    void create_expense_list() {
+//        //TODO - need to work on this
+//        //GIVEN
+//        ExpenseServiceRepository expenseServiceRepository = mock(ExpenseServiceRepository.class);
+//        ExpenseItemConverter expenseItemConverter = mock(ExpenseItemConverter.class);
+//        ExpenseService expenseService = new ExpenseService(expenseServiceRepository, expenseItemConverter);
+//
+//        String email = mockNeat.emails().val();
+//        String title = mockNeat.strings().val();
+//
+//        //WHEN
+//        String id = expenseService.createExpenseList(email, title);
+//
+//        List<ExpenseItemList> expenseItemList = expenseService.getExpenseListByEmail(email);
+//
+//
+//
+//        //THEN
+//        assertNotNull(expenseItemList);
+//
+//
+//    }
 
 }

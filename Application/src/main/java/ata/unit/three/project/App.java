@@ -7,7 +7,9 @@ import ata.unit.three.project.expense.service.model.ExpenseItemConverter;
 import dagger.Module;
 import dagger.Provides;
 
+@Module
 public class App {
+    @Provides
     public static ExpenseService expenseService() {
         return new ExpenseService(new ExpenseServiceRepository(), new ExpenseItemConverter());
     }
