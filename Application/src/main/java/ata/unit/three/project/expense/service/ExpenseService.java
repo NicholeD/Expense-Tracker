@@ -12,10 +12,12 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import static java.util.UUID.fromString;
 import static java.util.UUID.randomUUID;
 
+@Singleton
 public class ExpenseService {
 
     private ExpenseServiceRepository expenseServiceRepository;
