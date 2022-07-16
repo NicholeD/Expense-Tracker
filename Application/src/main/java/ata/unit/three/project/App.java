@@ -12,12 +12,6 @@ import javax.inject.Singleton;
 @Module
 public class App {
 
-    @Provides
-    public static ExpenseService expenseService(ExpenseServiceRepository expenseServiceRepository,
-                                                ExpenseItemConverter expenseItemConverter) {
-        return new ExpenseService(expenseServiceRepository, expenseItemConverter);
-    }
-
     @Singleton
     @Provides
     public ExpenseServiceRepository provideExpenseServiceRepository() {
