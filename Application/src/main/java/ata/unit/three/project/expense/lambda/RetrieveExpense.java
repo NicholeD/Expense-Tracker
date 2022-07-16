@@ -2,6 +2,7 @@ package ata.unit.three.project.expense.lambda;
 
 import ata.unit.three.project.App;
 import ata.unit.three.project.expense.dynamodb.ExpenseItem;
+import ata.unit.three.project.expense.service.DaggerExpenseServiceComponent;
 import ata.unit.three.project.expense.service.ExpenseService;
 import ata.unit.three.project.expense.service.exceptions.InvalidDataException;
 import ata.unit.three.project.expense.service.ExpenseServiceComponent;
@@ -36,7 +37,8 @@ public class RetrieveExpense implements RequestHandler<APIGatewayProxyRequestEve
 
         log.info(gson.toJson(input));
 
-        ExpenseService expenseService = App.expenseService();
+        ExpenseServiceComponent expenseServiceComponent = DaggerExpenseServiceComponent.create();
+        ExpenseService expenseService = expenseServiceComponent.expenseService();
 
         Map<String, String> headers = new HashMap<>();
         headers.put("Content-Type", "application/json");

@@ -5,6 +5,7 @@ import ata.unit.three.project.expense.dynamodb.ExpenseItemList;
 import ata.unit.three.project.expense.dynamodb.ExpenseServiceRepository;
 import ata.unit.three.project.expense.lambda.models.Expense;
 import ata.unit.three.project.expense.service.exceptions.InvalidDataException;
+import ata.unit.three.project.expense.service.exceptions.InvalidExpenseException;
 import ata.unit.three.project.expense.service.exceptions.ItemNotFoundException;
 import ata.unit.three.project.expense.service.model.ExpenseItemConverter;
 
@@ -76,12 +77,30 @@ public class ExpenseService {
         return expenseListId;
     }
 
+//    It shouldn't be possible to add/remove an expense item where The email of the expense item does not match the expense list
+//    It should not be possible to add an expense item that's already in the list
+//    It should not be possible to remove an expense item that does not exist in the list
+
     public void addExpenseItemToList(String id, String expenseId) {
+        if (StringUtils.isEmpty(expenseId) || isInvalidUuid(expenseId)) {
+            throw new InvalidExpenseException("Expense id is invalid");
+        }
+        if (StringUtils.isEmpty(id)) {
+            throw new InvalidDataException("Id is invalid");
+        }
         // Your Code Here
+        //    It shouldn't be possible to add/remove an expense item where The email of the expense item does not match the expense list
+        //    It should not be possible to add an expense item that's already in the list
+        ExpenseItem expenseItem = expenseServiceRepository.getExpenseById(expenseId);
+        expenseServiceRepository.addExpenseItemToList(id, expenseItem);
+
     }
 
     public void removeExpenseItemFromList(String id, String expenseId) {
         // Your Code Here
+
+        ExpenseItem expenseItem = expenseServiceRepository.getExpenseById(expenseId);
+        expenseServiceRepository.removeExpenseItemToList(id, expenseItem);
     }
 
     public List<ExpenseItemList> getExpenseListByEmail(String email) {

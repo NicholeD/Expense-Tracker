@@ -1,6 +1,7 @@
 package ata.unit.three.project.expense.lambda;
 
 import ata.unit.three.project.App;
+import ata.unit.three.project.expense.service.DaggerExpenseServiceComponent;
 import ata.unit.three.project.expense.service.ExpenseService;
 import ata.unit.three.project.expense.service.exceptions.InvalidDataException;
 import ata.unit.three.project.expense.service.ExpenseServiceComponent;
@@ -34,8 +35,6 @@ public class RetrieveExpenseListsByEmail
 
         log.info(gson.toJson(input));
 
-
-        ExpenseService expenseService = App.expenseService();
         Map<String, String> headers = new HashMap<>();
         headers.put("Content-Type", "application/json");
 
@@ -43,6 +42,9 @@ public class RetrieveExpenseListsByEmail
                 .withHeaders(headers);
 
         String email = input.getQueryStringParameters().get("email");
+
+        ExpenseServiceComponent expenseServiceComponent = DaggerExpenseServiceComponent.create();
+        ExpenseService expenseService = expenseServiceComponent.expenseService();
 
         try {
             String output = gson.toJson(expenseService.getExpenseListByEmail(email));

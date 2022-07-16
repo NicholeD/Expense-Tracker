@@ -3,7 +3,9 @@ package ata.unit.three.project.expense.lambda;
 import ata.unit.three.project.App;
 import ata.unit.three.project.expense.dynamodb.ExpenseItem;
 import ata.unit.three.project.expense.lambda.models.Expense;
+import ata.unit.three.project.expense.service.DaggerExpenseServiceComponent;
 import ata.unit.three.project.expense.service.ExpenseService;
+import ata.unit.three.project.expense.service.ExpenseServiceComponent;
 import ata.unit.three.project.expense.service.exceptions.InvalidDataException;
 import ata.unit.three.project.expense.service.exceptions.ItemNotFoundException;
 import com.amazonaws.services.lambda.runtime.Context;
@@ -39,7 +41,9 @@ public class UpdateExpense implements RequestHandler<APIGatewayProxyRequestEvent
         Expense expense = gson.fromJson(input.getBody(), Expense.class);
 
         // Your Code Here
-        ExpenseService expenseService = App.expenseService();
+        ExpenseServiceComponent expenseServiceComponent = DaggerExpenseServiceComponent.create();
+        ExpenseService expenseService = expenseServiceComponent.expenseService();
+
 
         if (expenseId == null || expenseId.isEmpty()) {
             return response

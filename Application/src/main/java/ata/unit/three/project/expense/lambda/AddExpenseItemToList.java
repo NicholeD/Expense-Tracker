@@ -1,5 +1,8 @@
 package ata.unit.three.project.expense.lambda;
 
+import ata.unit.three.project.expense.service.DaggerExpenseServiceComponent;
+import ata.unit.three.project.expense.service.ExpenseService;
+import ata.unit.three.project.expense.service.ExpenseServiceComponent;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
@@ -23,8 +26,12 @@ public class AddExpenseItemToList implements RequestHandler<APIGatewayProxyReque
         log.info(gson.toJson(input));
 
         APIGatewayProxyResponseEvent response = new APIGatewayProxyResponseEvent();
+        ExpenseServiceComponent expenseServiceComponent = DaggerExpenseServiceComponent.create();
+        ExpenseService expenseService = expenseServiceComponent.expenseService();
 
         // Your Code Here...
+        //    It shouldn't be possible to add/remove an expense item where The email of the expense item does not match the expense list
+        //    It should not be possible to add an expense item that's already in the list
 
         return response
                 .withStatusCode(200);

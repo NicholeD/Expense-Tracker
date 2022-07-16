@@ -2,7 +2,9 @@ package ata.unit.three.project.expense.lambda;
 
 import ata.unit.three.project.App;
 import ata.unit.three.project.expense.dynamodb.ExpenseItem;
+import ata.unit.three.project.expense.service.DaggerExpenseServiceComponent;
 import ata.unit.three.project.expense.service.ExpenseService;
+import ata.unit.three.project.expense.service.ExpenseServiceComponent;
 import ata.unit.three.project.expense.service.exceptions.InvalidDataException;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
@@ -42,9 +44,11 @@ public class RetrieveExpensesByEmail
 
         String email = input.getQueryStringParameters().get("email");
 
+        ExpenseServiceComponent expenseServiceComponent = DaggerExpenseServiceComponent.create();
+        ExpenseService expenseService = expenseServiceComponent.expenseService();
+
         // Your Code Here
         try {
-            ExpenseService expenseService = App.expenseService();
             List<ExpenseItem> expenses = expenseService.getExpensesByEmail(email);
             String output = gson.toJson(expenses);
 

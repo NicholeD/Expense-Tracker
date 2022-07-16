@@ -2,7 +2,9 @@ package ata.unit.three.project.expense.lambda;
 
 import ata.unit.three.project.App;
 import ata.unit.three.project.expense.lambda.models.Expense;
+import ata.unit.three.project.expense.service.DaggerExpenseServiceComponent;
 import ata.unit.three.project.expense.service.ExpenseService;
+import ata.unit.three.project.expense.service.ExpenseServiceComponent;
 import ata.unit.three.project.expense.service.exceptions.InvalidDataException;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
@@ -32,9 +34,11 @@ public class DeleteExpense implements RequestHandler<APIGatewayProxyRequestEvent
         String expenseId = input.getPathParameters().get("expenseId");
 
         APIGatewayProxyResponseEvent response = new APIGatewayProxyResponseEvent();
+        ExpenseServiceComponent expenseServiceComponent = DaggerExpenseServiceComponent.create();
+        ExpenseService expenseService = expenseServiceComponent.expenseService();
 
         // Your Code Here
-        ExpenseService expenseService = App.expenseService();
+
 
         if (expenseId == null || expenseId.isEmpty()) {
             return response
