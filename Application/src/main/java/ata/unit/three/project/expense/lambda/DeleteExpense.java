@@ -34,6 +34,7 @@ public class DeleteExpense implements RequestHandler<APIGatewayProxyRequestEvent
         String expenseId = input.getPathParameters().get("expenseId");
 
         APIGatewayProxyResponseEvent response = new APIGatewayProxyResponseEvent();
+
         ExpenseServiceComponent expenseServiceComponent = DaggerExpenseServiceComponent.create();
         ExpenseService expenseService = expenseServiceComponent.expenseService();
 

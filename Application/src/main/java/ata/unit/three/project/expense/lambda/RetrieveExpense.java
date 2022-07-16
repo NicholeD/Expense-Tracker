@@ -23,7 +23,6 @@ import java.util.Map;
 import java.util.UUID;
 
 
-
 @ExcludeFromJacocoGeneratedReport
 public class RetrieveExpense implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
 
@@ -37,9 +36,6 @@ public class RetrieveExpense implements RequestHandler<APIGatewayProxyRequestEve
 
         log.info(gson.toJson(input));
 
-        ExpenseServiceComponent expenseServiceComponent = DaggerExpenseServiceComponent.create();
-        ExpenseService expenseService = expenseServiceComponent.expenseService();
-
         Map<String, String> headers = new HashMap<>();
         headers.put("Content-Type", "application/json");
 
@@ -47,6 +43,9 @@ public class RetrieveExpense implements RequestHandler<APIGatewayProxyRequestEve
                 .withHeaders(headers);
 
         String expenseId = input.getPathParameters().get("expenseId");
+
+        ExpenseServiceComponent expenseServiceComponent = DaggerExpenseServiceComponent.create();
+        ExpenseService expenseService = expenseServiceComponent.expenseService();
 
 //        try {
 //            UUID.fromString(expenseId);

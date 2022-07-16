@@ -3,7 +3,7 @@ package ata.unit.three.project.expense.lambda;
 import ata.unit.three.project.App;
 import ata.unit.three.project.expense.dynamodb.ExpenseItem;
 import ata.unit.three.project.expense.lambda.models.Expense;
-import ata.unit.three.project.expense.service.DaggerExpenseServiceComponent;
+//import ata.unit.three.project.expense.service.DaggerExpenseServiceComponent;
 import ata.unit.three.project.expense.service.ExpenseService;
 import ata.unit.three.project.expense.service.ExpenseServiceComponent;
 import ata.unit.three.project.expense.service.exceptions.InvalidDataException;
@@ -41,8 +41,9 @@ public class UpdateExpense implements RequestHandler<APIGatewayProxyRequestEvent
         Expense expense = gson.fromJson(input.getBody(), Expense.class);
 
         // Your Code Here
-        ExpenseServiceComponent expenseServiceComponent = DaggerExpenseServiceComponent.create();
-        ExpenseService expenseService = expenseServiceComponent.expenseService();
+//        ExpenseServiceComponent expenseServiceComponent = DaggerExpenseServiceComponent.create();
+//        ExpenseService expenseService = expenseServiceComponent.expenseService();
+        ExpenseService expenseService = App.expenseService();
 
 
         if (expenseId == null || expenseId.isEmpty()) {

@@ -31,10 +31,9 @@ public class CreateExpenseList implements RequestHandler<APIGatewayProxyRequestE
         // Logging the request json to make debugging easier.
         log.info(gson.toJson(input));
 
+        APIGatewayProxyResponseEvent response = new APIGatewayProxyResponseEvent();
         ExpenseServiceComponent expenseServiceComponent = DaggerExpenseServiceComponent.create();
         ExpenseService expenseService = expenseServiceComponent.expenseService();
-
-        APIGatewayProxyResponseEvent response = new APIGatewayProxyResponseEvent();
 
         ExpenseList expenseList = gson.fromJson(input.getBody(), ExpenseList.class);
         String id = expenseService.createExpenseList(expenseList.getEmail(), expenseList.getTitle());

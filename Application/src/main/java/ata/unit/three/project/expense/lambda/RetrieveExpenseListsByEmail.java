@@ -46,6 +46,7 @@ public class RetrieveExpenseListsByEmail
         ExpenseServiceComponent expenseServiceComponent = DaggerExpenseServiceComponent.create();
         ExpenseService expenseService = expenseServiceComponent.expenseService();
 
+
         try {
             String output = gson.toJson(expenseService.getExpenseListByEmail(email));
             return response
