@@ -4,6 +4,8 @@ import ata.unit.three.project.App;
 import ata.unit.three.project.expense.service.DaggerExpenseServiceComponent;
 import ata.unit.three.project.expense.service.ExpenseService;
 import ata.unit.three.project.expense.service.ExpenseServiceComponent;
+import ata.unit.three.project.expense.service.exceptions.InvalidDataException;
+import ata.unit.three.project.expense.service.exceptions.ItemNotFoundException;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
@@ -34,7 +36,22 @@ public class AddExpenseItemToList implements RequestHandler<APIGatewayProxyReque
         //    It shouldn't be possible to add/remove an expense item where The email of the expense item does not match the expense list
         //    It should not be possible to add an expense item that's already in the list
 
-        return response
-                .withStatusCode(200);
+        try {
+            ResponseBody responseBody = gson.fromJson(input.getBody(), ResponseBody.class);
+
+            expenseService.addExpenseItemToList((responseBody.getExpenseListId()), responseBody.getExpenseItemId());
+
+            return response
+                    .withStatusCode(204);
+        } catch (InvalidDataException e) {
+            return response
+                    .withStatusCode(400)
+                    .withBody(gson.toJson(e.errorPayload()));
+        } catch (ItemNotFoundException e) {
+            return response
+                    .withStatusCode(404);
+        }
+
+
     }
 }

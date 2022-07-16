@@ -92,6 +92,13 @@ public class ExpenseService {
         //    It shouldn't be possible to add/remove an expense item where The email of the expense item does not match the expense list
         //    It should not be possible to add an expense item that's already in the list
         ExpenseItem expenseItem = expenseServiceRepository.getExpenseById(expenseId);
+        ExpenseItemList itemList = expenseServiceRepository.getExpenseListById(id);
+        String itemListEmail = itemList.getEmail();
+        String expenseEmail = expenseItem.getEmail();
+
+        if (!itemListEmail.equals(expenseEmail) || itemList.getExpenseItems().contains(expenseItem)) {
+            throw new IllegalArgumentException("You cannot add this item to this list, either the emails don't match or this item is already listed.");
+        }
         expenseServiceRepository.addExpenseItemToList(id, expenseItem);
 
     }
