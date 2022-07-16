@@ -5,6 +5,7 @@ import ata.unit.three.project.expense.service.DaggerExpenseServiceComponent;
 import ata.unit.three.project.expense.service.ExpenseService;
 import ata.unit.three.project.expense.service.ExpenseServiceComponent;
 import ata.unit.three.project.expense.service.exceptions.InvalidDataException;
+import ata.unit.three.project.expense.service.exceptions.InvalidExpenseException;
 import ata.unit.three.project.expense.service.exceptions.ItemNotFoundException;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
@@ -47,11 +48,9 @@ public class AddExpenseItemToList implements RequestHandler<APIGatewayProxyReque
             return response
                     .withStatusCode(400)
                     .withBody(gson.toJson(e.errorPayload()));
-        } catch (ItemNotFoundException e) {
+        } catch (ItemNotFoundException | IllegalArgumentException e) {
             return response
                     .withStatusCode(404);
         }
-
-
     }
 }
