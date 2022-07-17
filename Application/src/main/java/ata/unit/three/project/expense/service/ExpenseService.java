@@ -126,8 +126,31 @@ public class ExpenseService {
 
     public void removeExpenseItemFromList(String id, String expenseId) {
         // Your Code Here
-
         ExpenseItem expenseItem = expenseServiceRepository.getExpenseById(expenseId);
+        ExpenseItemList itemList = expenseServiceRepository.getExpenseListById(id);
+
+        //Checking if parameters are valid
+        if  (StringUtils.isEmpty(expenseId) || isInvalidUuid(expenseId)) {
+            throw new InvalidDataException("Expense id is not present");
+        } else if (StringUtils.isEmpty(id)) {
+            throw new InvalidDataException("Id is not present");
+        }
+
+        //Checking that expenseItem isn't null
+        if (expenseItem == null) {
+            throw new ItemNotFoundException("Expense does not exist");
+        }
+
+        //Checking itemList isn't null
+        if (itemList == null) {
+            throw new InvalidDataException("Expense List does not exist");
+        }
+
+        //Checking if email to expense and expenseList match
+        if (!Objects.equals(expenseItem.getEmail(), itemList.getEmail())) {
+            throw new InvalidDataException("Email does not match");
+        }
+
         expenseServiceRepository.removeExpenseItemToList(id, expenseItem);
     }
 

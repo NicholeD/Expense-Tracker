@@ -48,12 +48,11 @@ public class RemoveExpenseItemFromList
 
             return response
                     .withStatusCode(200);
-
         } catch (InvalidDataException e) {
             return response
                     .withStatusCode(400)
                     .withBody(gson.toJson(e.errorPayload()));
-        } catch (ItemNotFoundException e) {
+        } catch (Exception e) {
             return response
                     .withStatusCode(400);
         }

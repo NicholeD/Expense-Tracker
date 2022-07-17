@@ -63,19 +63,31 @@ public class ExpenseItem {
         this.amount = amount;
     }
 
+//    @Override
+//    public boolean equals(Object o) {
+//        if (this == o) return true;
+//        if (o==null || getClass() != o.getClass()) return false;
+//
+//        ExpenseItem that = (ExpenseItem) o;
+//        return id.equals(this.id) && email.equals(that.email);
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//        return Objects.hash(id, email);
+//    }
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o==null || getClass() != o.getClass()) return false;
-
+        if (!(o instanceof ExpenseItem)) return false;
         ExpenseItem that = (ExpenseItem) o;
-        return id.equals(this.id) && email.equals(that.email);
+        return Objects.equals(getId(), that.getId()) && Objects.equals(getEmail(), that.getEmail()) && Objects.equals(getExpenseDate(), that.getExpenseDate()) && Objects.equals(getTitle(), that.getTitle()) && Objects.equals(getAmount(), that.getAmount());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, email);
+        return Objects.hash(getId(), getEmail(), getExpenseDate(), getTitle(), getAmount());
     }
-
-
 }

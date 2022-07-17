@@ -32,16 +32,16 @@ public class AddExpenseItemToList implements RequestHandler<APIGatewayProxyReque
         APIGatewayProxyResponseEvent response = new APIGatewayProxyResponseEvent();
         ExpenseServiceComponent expenseServiceComponent = DaggerExpenseServiceComponent.create();
         ExpenseService expenseService = expenseServiceComponent.expenseService();
+        ResponseBody responseBody = gson.fromJson(input.getBody(), ResponseBody.class);
 
         // Your Code Here...
         //    It shouldn't be possible to add/remove an expense item where The email of the expense item does not match the expense list
         //    It should not be possible to add an expense item that's already in the list
 
         try {
-            ResponseBody responseBody = gson.fromJson(input.getBody(), ResponseBody.class);
             expenseService.addExpenseItemToList((responseBody.getExpenseListId()), responseBody.getExpenseItemId());
 
-            //map with gson instead of an object with responsebody class
+            //map with gson instead of an object with responsebody class??
 
             return response
                     .withStatusCode(204);
