@@ -55,7 +55,7 @@ public class RemoveExpenseItemFromList
                     .withBody(gson.toJson(e.errorPayload()));
         } catch (ItemNotFoundException e) {
             return response
-                    .withStatusCode(404);
+                    .withStatusCode(400);
         }
     }
 }

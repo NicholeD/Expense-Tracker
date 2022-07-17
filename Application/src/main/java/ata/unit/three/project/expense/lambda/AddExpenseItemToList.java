@@ -39,18 +39,21 @@ public class AddExpenseItemToList implements RequestHandler<APIGatewayProxyReque
 
         try {
             ResponseBody responseBody = gson.fromJson(input.getBody(), ResponseBody.class);
-
             expenseService.addExpenseItemToList((responseBody.getExpenseListId()), responseBody.getExpenseItemId());
+
+            //map with gson instead of an object with responsebody class
 
             return response
                     .withStatusCode(204);
         } catch (InvalidDataException e) {
+            log.info("InvalidDataException thrown here");
             return response
                     .withStatusCode(400)
                     .withBody(gson.toJson(e.errorPayload()));
-        } catch (ItemNotFoundException | IllegalArgumentException e) {
+        } catch (Exception e) {
+            log.info("item not found or illegal argument exception thrown");
             return response
-                    .withStatusCode(404);
+                    .withStatusCode(400);
         }
     }
 }

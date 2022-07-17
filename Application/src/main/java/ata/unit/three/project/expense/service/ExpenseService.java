@@ -12,6 +12,7 @@ import ata.unit.three.project.expense.service.model.ExpenseItemConverter;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
+import java.util.Objects;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -82,25 +83,45 @@ public class ExpenseService {
 //    It should not be possible to remove an expense item that does not exist in the list
 
     public void addExpenseItemToList(String id, String expenseId) {
-        if (StringUtils.isEmpty(expenseId) || isInvalidUuid(expenseId)) {
-            throw new InvalidExpenseException("Expense id is invalid");
-        }
-        if (StringUtils.isEmpty(id)) {
-            throw new InvalidDataException("Id is invalid");
-        }
-        // Your Code Here
-        //    It shouldn't be possible to add/remove an expense item where The email of the expense item does not match the expense list
-        //    It should not be possible to add an expense item that's already in the list
         ExpenseItem expenseItem = expenseServiceRepository.getExpenseById(expenseId);
         ExpenseItemList itemList = expenseServiceRepository.getExpenseListById(id);
-        String itemListEmail = itemList.getEmail();
-        String expenseEmail = expenseItem.getEmail();
 
-        if (!itemListEmail.equals(expenseEmail) || itemList.getExpenseItems().contains(expenseItem)) {
-            throw new IllegalArgumentException("You cannot add this item to this list, either the emails don't match or this item is already listed.");
+        //Checking if parameters are valid
+        if  (StringUtils.isEmpty(expenseId) || isInvalidUuid(expenseId)) {
+            throw new InvalidDataException("Expense id is not present");
+        } else if (StringUtils.isEmpty(id)) {
+            throw new InvalidDataException("Id is not present");
         }
-        expenseServiceRepository.addExpenseItemToList(id, expenseItem);
 
+        //Checking that expenseItem isn't null
+        if (expenseItem == null) {
+            throw new ItemNotFoundException("Expense does not exist");
+        }
+
+        //Checking itemList isn't null
+        if (itemList == null) {
+            throw new InvalidDataException("Expense List does not exist");
+        }
+
+//        //Checking if expenseId is associated with another item on list
+//        for (ExpenseItem item : itemList.getExpenseItems()) {
+//            if (item.getId().equals(expenseId)) {
+//                throw new InvalidDataException("The Expense Item's id is associated with an item already on this list");
+//            }
+//        }
+
+        //Checking if expense is already on this list
+        if (itemList.getExpenseItems().contains(expenseItem)) {
+            throw new InvalidDataException("ExpenseItem already exists on this list");
+        }
+
+        //Checking if email to expense and expenseList match
+        if (!expenseItem.getEmail().equals(itemList.getEmail())) {
+            throw new InvalidDataException("Email does not match");
+        }
+
+
+        expenseServiceRepository.addExpenseItemToList(id, expenseItem);
     }
 
     public void removeExpenseItemFromList(String id, String expenseId) {
