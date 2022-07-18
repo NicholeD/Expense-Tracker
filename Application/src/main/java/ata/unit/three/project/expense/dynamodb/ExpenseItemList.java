@@ -6,12 +6,13 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBIndexHashKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 import com.kenzie.ata.ExcludeFromJacocoGeneratedReport;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
 @ExcludeFromJacocoGeneratedReport
 @DynamoDBTable(tableName = "ExpenseList")
-public class ExpenseItemList {
+public class ExpenseItemList  {
     private String id;
     private String title;
     private String email;
@@ -53,6 +54,11 @@ public class ExpenseItemList {
         this.email = email;
     }
 
+//    @Override
+//    public int compare(ExpenseItem o1, ExpenseItem o2) {
+//        return o1.getExpenseDate().compareTo(o2.getExpenseDate());
+//    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -64,6 +70,11 @@ public class ExpenseItemList {
         ExpenseItemList that = (ExpenseItemList) o;
         return Objects.equals(id, that.id);
     }
+
+//    @Override
+//    public Comparator<ExpenseItem> reversed() {
+//        return Comparator.super.reversed();
+//    }
 
     @Override
     public int hashCode() {

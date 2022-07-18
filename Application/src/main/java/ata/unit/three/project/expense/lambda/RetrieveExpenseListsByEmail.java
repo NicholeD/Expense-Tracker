@@ -1,6 +1,8 @@
 package ata.unit.three.project.expense.lambda;
 
 import ata.unit.three.project.App;
+import ata.unit.three.project.expense.dynamodb.ExpenseItem;
+import ata.unit.three.project.expense.dynamodb.ExpenseItemList;
 import ata.unit.three.project.expense.service.DaggerExpenseServiceComponent;
 import ata.unit.three.project.expense.service.ExpenseService;
 import ata.unit.three.project.expense.service.exceptions.InvalidDataException;
@@ -17,13 +19,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.inject.Inject;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+
+import static java.util.Collections.*;
 
 @ExcludeFromJacocoGeneratedReport
 public class RetrieveExpenseListsByEmail
         implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
-
 
     static final Logger log = LogManager.getLogger();
 
@@ -48,7 +50,16 @@ public class RetrieveExpenseListsByEmail
 
 
         try {
-            String output = gson.toJson(expenseService.getExpenseListByEmail(email));
+            List<ExpenseItemList> list = expenseService.getExpenseListByEmail(email);
+
+            for(ExpenseItemList itemList : list) {
+//                for (ExpenseItem item : itemList.getExpenseItems()) {
+                    Comparator<ExpenseItem> dateSorter = Comparator.comparing(ExpenseItem::getExpenseDate);
+                    Collections.sort(itemList.getExpenseItems(), dateSorter.reversed());
+//                }
+            }
+
+            String output = gson.toJson(list);
             return response
                     .withStatusCode(200)
                     .withBody(output);
