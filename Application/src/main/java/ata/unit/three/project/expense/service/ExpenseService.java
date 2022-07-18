@@ -73,6 +73,9 @@ public class ExpenseService {
     }
 
     public String createExpenseList(String email, String title) {
+        if (StringUtils.isEmpty(email) || StringUtils.isEmpty(title)) {
+            throw new InvalidDataException("Email is not present");
+        }
         String expenseListId = randomUUID().toString();
         expenseServiceRepository.createExpenseList(expenseListId, email, title);
         return expenseListId;

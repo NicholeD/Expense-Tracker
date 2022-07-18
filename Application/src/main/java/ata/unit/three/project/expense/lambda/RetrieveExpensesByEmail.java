@@ -61,6 +61,9 @@ public class RetrieveExpensesByEmail
             return response
                     .withStatusCode(400)
                     .withBody(gson.toJson(e.errorPayload()));
+        } catch (Exception e) {
+            return response
+                    .withStatusCode(400);
         }
     }
 }

@@ -47,19 +47,12 @@ public class RetrieveExpense implements RequestHandler<APIGatewayProxyRequestEve
         ExpenseServiceComponent expenseServiceComponent = DaggerExpenseServiceComponent.create();
         ExpenseService expenseService = expenseServiceComponent.expenseService();
 
-//        try {
-//            UUID.fromString(expenseId);
-//        } catch(IllegalArgumentException e) {
-//            throw new InvalidDataException("The Id is not a valid UUID");
-//        }
-
         try {
             ExpenseItem expense = expenseService.getExpenseById(expenseId);
             if (expense == null) {
                 return response
                         .withStatusCode(404);
             }
-
 
             String output = gson.toJson(expense);
 
