@@ -120,7 +120,6 @@ public class ExpenseService {
             throw new InvalidDataException("Email does not match");
         }
 
-
         expenseServiceRepository.addExpenseItemToList(id, expenseItem);
     }
 
@@ -150,12 +149,11 @@ public class ExpenseService {
         if (!Objects.equals(expenseItem.getEmail(), itemList.getEmail())) {
             throw new InvalidDataException("Email does not match");
         }
-
         expenseServiceRepository.removeExpenseItemToList(id, expenseItem);
     }
 
     public List<ExpenseItemList> getExpenseListByEmail(String email) {
-        if (StringUtils.isEmpty(email)) {
+        if (StringUtils.isEmpty(email) || email == null) {
             throw new InvalidDataException("Email is not present");
         }
         return expenseServiceRepository.getExpenseListsByEmail(email);

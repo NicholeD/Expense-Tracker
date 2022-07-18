@@ -6,7 +6,6 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBIndexHashKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 import com.kenzie.ata.ExcludeFromJacocoGeneratedReport;
 
-import java.util.Comparator;
 import java.util.Objects;
 
 @ExcludeFromJacocoGeneratedReport
@@ -77,28 +76,4 @@ public class ExpenseItem {
 //    public int hashCode() {
 //        return Objects.hash(id, email);
 //    }
-
-
-//    @Override
-//    public int compare(ExpenseItem o1, ExpenseItem o2) {
-//        return o1.getExpenseDate().compareTo(o2.getExpenseDate());
-//    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ExpenseItem)) return false;
-        ExpenseItem that = (ExpenseItem) o;
-        return Objects.equals(getId(), that.getId()) && Objects.equals(getEmail(), that.getEmail()) && Objects.equals(getExpenseDate(), that.getExpenseDate()) && Objects.equals(getTitle(), that.getTitle()) && Objects.equals(getAmount(), that.getAmount());
-    }
-
-//    @Override
-//    public Comparator<ExpenseItem> reversed() {
-//        return Comparator.super.reversed();
-//    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getId(), getEmail(), getExpenseDate(), getTitle(), getAmount());
-    }
 }

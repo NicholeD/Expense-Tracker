@@ -48,16 +48,11 @@ public class RetrieveExpenseListsByEmail
         ExpenseServiceComponent expenseServiceComponent = DaggerExpenseServiceComponent.create();
         ExpenseService expenseService = expenseServiceComponent.expenseService();
 
-
         try {
             List<ExpenseItemList> list = expenseService.getExpenseListByEmail(email);
 
-            for(ExpenseItemList itemList : list) {
-//                for (ExpenseItem item : itemList.getExpenseItems()) {
-                    Comparator<ExpenseItem> dateSorter = Comparator.comparing(ExpenseItem::getExpenseDate);
-                    Collections.sort(itemList.getExpenseItems(), dateSorter.reversed());
-//                }
-            }
+            Comparator<ExpenseItemList> listSorter = Comparator.comparing(ExpenseItemList::getId);
+            Collections.sort(list, listSorter);
 
             String output = gson.toJson(list);
             return response
