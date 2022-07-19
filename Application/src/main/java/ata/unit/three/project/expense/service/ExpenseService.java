@@ -47,6 +47,9 @@ public class ExpenseService {
     }
 
     public String createExpense(Expense expense) {
+        if (expense == null) {
+            throw new InvalidDataException("Expense is null");
+        }
         ExpenseItem expenseItem = expenseItemConverter.convert(expense);
         expenseServiceRepository.createExpense(expenseItem);
         return expenseItem.getId();
@@ -73,8 +76,11 @@ public class ExpenseService {
     }
 
     public String createExpenseList(String email, String title) {
-        if (StringUtils.isEmpty(email) || StringUtils.isEmpty(title)) {
-            throw new InvalidDataException("Email is not present");
+        if (StringUtils.isEmpty(email) || email == null) {
+            throw new InvalidDataException("Email is invalid");
+        }
+        if ( StringUtils.isEmpty(title)|| title == null) {
+            throw new InvalidDataException("Title is invalid");
         }
         String expenseListId = randomUUID().toString();
         expenseServiceRepository.createExpenseList(expenseListId, email, title);
@@ -105,13 +111,6 @@ public class ExpenseService {
         if (itemList == null) {
             throw new InvalidDataException("Expense List does not exist");
         }
-
-//        //Checking if expenseId is associated with another item on list
-//        for (ExpenseItem item : itemList.getExpenseItems()) {
-//            if (item.getId().equals(expenseId)) {
-//                throw new InvalidDataException("The Expense Item's id is associated with an item already on this list");
-//            }
-//        }
 
         //Checking if expense is already on this list
         if (itemList.getExpenseItems().contains(expenseItem)) {

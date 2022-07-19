@@ -38,12 +38,17 @@ public class CreateExpense implements RequestHandler<APIGatewayProxyRequestEvent
 
         APIGatewayProxyResponseEvent response = new APIGatewayProxyResponseEvent();
 
-        // Your Code Here
-        Expense expense = gson.fromJson(input.getBody(), Expense.class);
-        String output = expenseService.createExpense(expense);
+        try {
+            Expense expense = gson.fromJson(input.getBody(), Expense.class);
+            String output = expenseService.createExpense(expense);
 
-        return response
-                .withStatusCode(200)
-                .withBody(output);
+            return response
+                    .withStatusCode(200)
+                    .withBody(output);
+        } catch (InvalidDataException e) {
+            return response
+                    .withStatusCode(400);
+        }
+
     }
 }

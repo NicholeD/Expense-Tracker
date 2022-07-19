@@ -1,11 +1,13 @@
 package ata.unit.three.project.expense.lambda;
 
 import ata.unit.three.project.App;
+import ata.unit.three.project.expense.lambda.models.Expense;
 import ata.unit.three.project.expense.lambda.models.ExpenseList;
 import ata.unit.three.project.expense.service.DaggerExpenseServiceComponent;
 import ata.unit.three.project.expense.service.ExpenseService;
 import ata.unit.three.project.expense.service.ExpenseServiceComponent;
 
+import ata.unit.three.project.expense.service.exceptions.InvalidDataException;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
@@ -31,15 +33,26 @@ public class CreateExpenseList implements RequestHandler<APIGatewayProxyRequestE
         // Logging the request json to make debugging easier.
         log.info(gson.toJson(input));
 
-        APIGatewayProxyResponseEvent response = new APIGatewayProxyResponseEvent();
         ExpenseServiceComponent expenseServiceComponent = DaggerExpenseServiceComponent.create();
         ExpenseService expenseService = expenseServiceComponent.expenseService();
 
-        ExpenseList expenseList = gson.fromJson(input.getBody(), ExpenseList.class);
-        String id = expenseService.createExpenseList(expenseList.getEmail(), expenseList.getTitle());
+        APIGatewayProxyResponseEvent response = new APIGatewayProxyResponseEvent();
 
-        return response
-                .withStatusCode(200)
-                .withBody(id);
+        try {
+            Expense expense = gson.fromJson(input.getBody(), Expense.class);
+            String id = expenseService.createExpenseList(expense.getEmail(), expense.getTitle());
+
+            return response
+                    .withStatusCode(200)
+                    .withBody(id);
+        } catch (InvalidDataException e) {
+            return response
+                    .withStatusCode(400)
+                    .withBody(gson.toJson(e.errorPayload()));
+        } catch (Exception e) {
+            return response
+                    .withStatusCode(418);
+        }
+
     }
 }
