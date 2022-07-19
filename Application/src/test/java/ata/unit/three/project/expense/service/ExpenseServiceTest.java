@@ -239,7 +239,6 @@ class ExpenseServiceTest {
     }
 
 
-    //TODO - finish test
     @Test
     void delete_expense() {
 
@@ -286,11 +285,19 @@ class ExpenseServiceTest {
         expenseItem.setEmail(mockNeat.emails().val());
         expenseItem.setExpenseDate(Instant.now().toString());
         expenseItem.setTitle(mockNeat.strings().val());
+        List<ExpenseItem> expenseitems = new ArrayList<>();
+        expenseitems.add(expenseItem);
+        String listId = expenseService.createExpenseList(expenseItem.getEmail(), expenseItem.getTitle());
+
+        when(expenseServiceRepository.getExpensesByEmail(any())).thenReturn(expenseitems);
 
         //WHEN
-
+        expenseService.addExpenseItemToList(listId, expenseItem.getId());
+        List<ExpenseItem> expenses = expenseService.getExpensesByEmail(expenseItem.getEmail());
 
         //THEN
+        assertTrue(expenses.contains(expenseItem));
+
     }
 
     /** ------------------------------------------------------------------------
@@ -376,28 +383,64 @@ class ExpenseServiceTest {
     }
 
 
-//    @Test
-//    void create_expense_list() {
-//        //TODO - need to work on this
-//        //GIVEN
-//        ExpenseServiceRepository expenseServiceRepository = mock(ExpenseServiceRepository.class);
-//        ExpenseItemConverter expenseItemConverter = mock(ExpenseItemConverter.class);
-//        ExpenseService expenseService = new ExpenseService(expenseServiceRepository, expenseItemConverter);
-//
-//        String email = mockNeat.emails().val();
-//        String title = mockNeat.strings().val();
-//
-//        //WHEN
-//        String id = expenseService.createExpenseList(email, title);
-//
-//        List<ExpenseItemList> expenseItemList = expenseService.getExpenseListByEmail(email);
-//
-//
-//
-//        //THEN
-//        assertNotNull(expenseItemList);
-//
-//
-//    }
+    @Test
+    void create_expense_list() {
+        //GIVEN
+        ExpenseServiceRepository expenseServiceRepository = mock(ExpenseServiceRepository.class);
+        ExpenseItemConverter expenseItemConverter = mock(ExpenseItemConverter.class);
+        ExpenseService expenseService = new ExpenseService(expenseServiceRepository, expenseItemConverter);
+
+        ExpenseItemList expenseItemlist = new ExpenseItemList();
+        String id = UUID.randomUUID().toString();
+        String email = mockNeat.emails().val();
+        String title = mockNeat.strings().val();
+        expenseItemlist.setId(id);
+        expenseItemlist.setEmail(email);
+        expenseItemlist.setTitle(title);
+        List<ExpenseItemList> expenseItemsList = new ArrayList<ExpenseItemList>();
+        expenseItemsList.add(expenseItemlist);
+
+        when(expenseServiceRepository.getExpenseListById(any())).thenReturn(expenseItemlist);
+
+        //WHEN
+        String expenseListID = expenseService.createExpenseList(email, title);
+
+        ExpenseItemList expenseItemList2 = expenseService.getExpenseItemListById(id);
+
+        //THEN
+        assertEquals(expenseItemlist, expenseItemList2);
+    }
+
+    @Test
+    void create_expense_list_with_invalid_email() {
+        //GIVEN
+        ExpenseServiceRepository expenseServiceRepository = mock(ExpenseServiceRepository.class);
+        ExpenseItemConverter expenseItemConverter = mock(ExpenseItemConverter.class);
+        ExpenseService expenseService = new ExpenseService(expenseServiceRepository, expenseItemConverter);
+
+        String email = "";
+        String title = mockNeat.strings().val();
+
+        //WHEN
+        //THEN
+        assertThrows(InvalidDataException.class,
+                () -> expenseService.createExpenseList(email, title));
+    }
+
+    @Test
+    void create_expense_list_with_invalid_title() {
+        //GIVEN
+        ExpenseServiceRepository expenseServiceRepository = mock(ExpenseServiceRepository.class);
+        ExpenseItemConverter expenseItemConverter = mock(ExpenseItemConverter.class);
+        ExpenseService expenseService = new ExpenseService(expenseServiceRepository, expenseItemConverter);
+
+        String email = mockNeat.emails().val();;
+        String title = null;
+
+        //WHEN
+        //THEN
+        assertThrows(InvalidDataException.class,
+                () -> expenseService.createExpenseList(email, title));
+    }
 
 }

@@ -29,7 +29,7 @@ public class ExpenseServiceRepository {
         if (!ExpenseTable.doesExpenseTableExist(EXPENSE_LIST_TABLE_NAME)) {
             ExpenseTable.createExpenseListTable();
         }
-    }
+        }
 
     public ExpenseItem getExpenseById(String expenseId) {
         ExpenseItem item = mapper.load(ExpenseItem.class, expenseId);

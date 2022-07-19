@@ -46,6 +46,14 @@ public class ExpenseService {
         return expenseServiceRepository.getExpensesByEmail(email);
     }
 
+    public ExpenseItemList getExpenseItemListById(String id) {
+        if (StringUtils.isEmpty(id)) {
+            throw new InvalidDataException("Id cannot be empty");
+        }
+
+        return expenseServiceRepository.getExpenseListById(id);
+    }
+
     public String createExpense(Expense expense) {
         if (expense == null) {
             throw new InvalidDataException("Expense is null");
@@ -93,7 +101,7 @@ public class ExpenseService {
 
     public void addExpenseItemToList(String id, String expenseId) {
         ExpenseItem expenseItem = expenseServiceRepository.getExpenseById(expenseId);
-        ExpenseItemList itemList = expenseServiceRepository.getExpenseListById(id);
+        ExpenseItemList expenseItemList = expenseServiceRepository.getExpenseListById(id);
 
         //Checking if parameters are valid
         if  (StringUtils.isEmpty(expenseId) || isInvalidUuid(expenseId)) {
@@ -102,23 +110,23 @@ public class ExpenseService {
             throw new InvalidDataException("Id is not present");
         }
 
-        //Checking that expenseItem isn't null
-        if (expenseItem == null) {
-            throw new ItemNotFoundException("Expense does not exist");
-        }
-
-        //Checking itemList isn't null
-        if (itemList == null) {
-            throw new InvalidDataException("Expense List does not exist");
-        }
+//        //Checking that expenseItem isn't null
+//        if (expenseItem == null) {
+//            throw new ItemNotFoundException("Expense does not exist");
+//        }
+//
+//        //Checking itemList isn't null
+//        if (itemList == null) {
+//            throw new InvalidDataException("Expense List does not exist");
+//        }
 
         //Checking if expense is already on this list
-        if (itemList.getExpenseItems().contains(expenseItem)) {
+        if (expenseItemList.getExpenseItems().contains(expenseItem)) {
             throw new InvalidDataException("ExpenseItem already exists on this list");
         }
 
         //Checking if email to expense and expenseList match
-        if (!expenseItem.getEmail().equals(itemList.getEmail())) {
+        if (!expenseItem.getEmail().equals(expenseItemList.getEmail())) {
             throw new InvalidDataException("Email does not match");
         }
 

@@ -33,26 +33,26 @@ public class CreateExpenseList implements RequestHandler<APIGatewayProxyRequestE
         // Logging the request json to make debugging easier.
         log.info(gson.toJson(input));
 
-        ExpenseServiceComponent expenseServiceComponent = DaggerExpenseServiceComponent.create();
-        ExpenseService expenseService = expenseServiceComponent.expenseService();
-
         APIGatewayProxyResponseEvent response = new APIGatewayProxyResponseEvent();
 
+        ExpenseServiceComponent expenseServiceComponent = DaggerExpenseServiceComponent.create();
+        ExpenseService expenseService = expenseServiceComponent.expenseService();
+        ResponseBody responseBody = gson.fromJson(input.getBody(), ResponseBody.class);
+
         try {
-            Expense expense = gson.fromJson(input.getBody(), Expense.class);
-            String id = expenseService.createExpenseList(expense.getEmail(), expense.getTitle());
+            //Expense expense = gson.fromJson(input.getBody(), Expense.class);
+            String id = expenseService.createExpenseList(responseBody.getEmail(), responseBody.getTitle());
 
             return response
                     .withStatusCode(200)
                     .withBody(id);
         } catch (InvalidDataException e) {
             return response
-                    .withStatusCode(400)
+                    .withStatusCode(418)
                     .withBody(gson.toJson(e.errorPayload()));
         } catch (Exception e) {
             return response
                     .withStatusCode(418);
         }
-
     }
 }
