@@ -38,11 +38,6 @@ public class RemoveExpenseItemFromList
         ExpenseService expenseService = expenseServiceComponent.expenseService();
         ResponseBody responseBody = gson.fromJson(input.getBody(), ResponseBody.class);
 
-
-        // Your Code Here
-        //    It shouldn't be possible to add/remove an expense item where The email of the expense item does not match the expense list
-        //    It should not be possible to remove an expense item that does not exist in the list
-
         try {
             expenseService.removeExpenseItemFromList((responseBody.getExpenseListId()), responseBody.getExpenseItemId());
 

@@ -49,6 +49,7 @@ public class RetrieveExpense implements RequestHandler<APIGatewayProxyRequestEve
 
         try {
             ExpenseItem expense = expenseService.getExpenseById(expenseId);
+
             if (expense == null) {
                 return response
                         .withStatusCode(404);
@@ -59,7 +60,6 @@ public class RetrieveExpense implements RequestHandler<APIGatewayProxyRequestEve
             return response
                     .withStatusCode(200)
                     .withBody(output);
-
         } catch (InvalidDataException e) {
             return response
                     .withStatusCode(400)

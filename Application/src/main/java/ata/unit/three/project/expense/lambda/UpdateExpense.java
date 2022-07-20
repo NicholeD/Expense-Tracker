@@ -40,11 +40,8 @@ public class UpdateExpense implements RequestHandler<APIGatewayProxyRequestEvent
         String expenseId = input.getPathParameters().get("expenseId");
         Expense expense = gson.fromJson(input.getBody(), Expense.class);
 
-        // Your Code Here
         ExpenseServiceComponent expenseServiceComponent = DaggerExpenseServiceComponent.create();
         ExpenseService expenseService = expenseServiceComponent.expenseService();
-
-
 
         if (expenseId == null || expenseId.isEmpty()) {
             return response
@@ -53,10 +50,12 @@ public class UpdateExpense implements RequestHandler<APIGatewayProxyRequestEvent
 
         try {
             ExpenseItem item = expenseService.getExpenseById(expenseId);
+
             if (item == null) {
                 return response
                         .withStatusCode(404);
             }
+
             expenseService.updateExpense(expenseId, expense);
             fromString(expenseId);
 

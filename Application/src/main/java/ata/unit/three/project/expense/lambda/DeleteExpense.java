@@ -34,12 +34,8 @@ public class DeleteExpense implements RequestHandler<APIGatewayProxyRequestEvent
         String expenseId = input.getPathParameters().get("expenseId");
 
         APIGatewayProxyResponseEvent response = new APIGatewayProxyResponseEvent();
-
         ExpenseServiceComponent expenseServiceComponent = DaggerExpenseServiceComponent.create();
         ExpenseService expenseService = expenseServiceComponent.expenseService();
-
-        // Your Code Here
-
 
         if (expenseId == null || expenseId.isEmpty()) {
             return response
@@ -52,7 +48,6 @@ public class DeleteExpense implements RequestHandler<APIGatewayProxyRequestEvent
             return response
                     .withStatusCode(204)
                     .withBody(expenseId);
-
         } catch (InvalidDataException e) {
             return response
                     .withStatusCode(400)

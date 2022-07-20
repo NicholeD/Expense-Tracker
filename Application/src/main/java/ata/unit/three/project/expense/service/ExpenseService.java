@@ -50,7 +50,6 @@ public class ExpenseService {
         if (StringUtils.isEmpty(id)) {
             throw new InvalidDataException("Id cannot be empty");
         }
-
         return expenseServiceRepository.getExpenseListById(id);
     }
 
@@ -84,20 +83,16 @@ public class ExpenseService {
     }
 
     public String createExpenseList(String email, String title) {
-        if (StringUtils.isEmpty(email) || email == null) {
+        if (StringUtils.isEmpty(email)) {
             throw new InvalidDataException("Email is invalid");
         }
-        if ( StringUtils.isEmpty(title)|| title == null) {
+        if ( StringUtils.isEmpty(title)) {
             throw new InvalidDataException("Title is invalid");
         }
         String expenseListId = randomUUID().toString();
         expenseServiceRepository.createExpenseList(expenseListId, email, title);
         return expenseListId;
     }
-
-//    It shouldn't be possible to add/remove an expense item where The email of the expense item does not match the expense list
-//    It should not be possible to add an expense item that's already in the list
-//    It should not be possible to remove an expense item that does not exist in the list
 
     public void addExpenseItemToList(String id, String expenseId) {
         ExpenseItem expenseItem = expenseServiceRepository.getExpenseById(expenseId);
@@ -110,15 +105,15 @@ public class ExpenseService {
             throw new InvalidDataException("Id is not present");
         }
 
-//        //Checking that expenseItem isn't null
-//        if (expenseItem == null) {
-//            throw new ItemNotFoundException("Expense does not exist");
-//        }
-//
-//        //Checking itemList isn't null
-//        if (itemList == null) {
-//            throw new InvalidDataException("Expense List does not exist");
-//        }
+        //Checking that expenseItem isn't null
+        if (expenseItem == null) {
+            throw new ItemNotFoundException("Expense does not exist");
+        }
+
+        //Checking itemList isn't null
+        if (expenseItemList == null) {
+            throw new InvalidDataException("Expense List does not exist");
+        }
 
         //Checking if expense is already on this list
         if (expenseItemList.getExpenseItems().contains(expenseItem)) {
@@ -163,7 +158,7 @@ public class ExpenseService {
     }
 
     public List<ExpenseItemList> getExpenseListByEmail(String email) {
-        if (StringUtils.isEmpty(email) || email == null) {
+        if (StringUtils.isEmpty(email)) {
             throw new InvalidDataException("Email is not present");
         }
         return expenseServiceRepository.getExpenseListsByEmail(email);

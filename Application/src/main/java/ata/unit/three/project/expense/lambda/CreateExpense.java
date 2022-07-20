@@ -49,6 +49,5 @@ public class CreateExpense implements RequestHandler<APIGatewayProxyRequestEvent
             return response
                     .withStatusCode(400);
         }
-
     }
 }

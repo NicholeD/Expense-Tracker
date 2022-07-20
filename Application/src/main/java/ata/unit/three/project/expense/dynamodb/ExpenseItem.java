@@ -63,17 +63,17 @@ public class ExpenseItem {
         this.amount = amount;
     }
 
-//    @Override
-//    public boolean equals(Object o) {
-//        if (this == o) return true;
-//        if (o==null || getClass() != o.getClass()) return false;
-//
-//        ExpenseItem that = (ExpenseItem) o;
-//        return id.equals(this.id) && email.equals(that.email);
-//    }
-//
-//    @Override
-//    public int hashCode() {
-//        return Objects.hash(id, email);
-//    }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o==null || getClass() != o.getClass()) return false;
+
+        ExpenseItem that = (ExpenseItem) o;
+        return id.equals(this.id) && email.equals(that.email);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, email);
+    }
 }

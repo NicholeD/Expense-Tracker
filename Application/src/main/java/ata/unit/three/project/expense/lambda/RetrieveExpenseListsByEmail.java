@@ -50,7 +50,6 @@ public class RetrieveExpenseListsByEmail
 
         try {
             List<ExpenseItemList> list = expenseService.getExpenseListByEmail(email);
-
             Comparator<ExpenseItemList> listSorter = Comparator.comparing(ExpenseItemList::getId);
             Collections.sort(list, listSorter);
 

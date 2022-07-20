@@ -8,6 +8,7 @@ import ata.unit.three.project.expense.service.ExpenseService;
 import ata.unit.three.project.expense.service.ExpenseServiceComponent;
 
 import ata.unit.three.project.expense.service.exceptions.InvalidDataException;
+import ata.unit.three.project.expense.service.exceptions.ItemNotFoundException;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
@@ -40,7 +41,6 @@ public class CreateExpenseList implements RequestHandler<APIGatewayProxyRequestE
         ResponseBody responseBody = gson.fromJson(input.getBody(), ResponseBody.class);
 
         try {
-            //Expense expense = gson.fromJson(input.getBody(), Expense.class);
             String id = expenseService.createExpenseList(responseBody.getEmail(), responseBody.getTitle());
 
             return response
@@ -49,6 +49,10 @@ public class CreateExpenseList implements RequestHandler<APIGatewayProxyRequestE
         } catch (InvalidDataException e) {
             return response
                     .withStatusCode(418)
+                    .withBody(gson.toJson(e.errorPayload()));
+        } catch (ItemNotFoundException e) {
+            return response
+                    .withStatusCode(400)
                     .withBody(gson.toJson(e.errorPayload()));
         } catch (Exception e) {
             return response
